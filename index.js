@@ -22,21 +22,23 @@ module.exports = class SuzuDownloader {
 
         res.pipe(outputFile);
 
-        if (this.option.progress === 'bar') {
-          var bar = new progress('  downloading [:bar] :percent :etas', {
-            complete: '=',
-            incomplete: ' ',
-            width: 40,
-            total: parseInt(res.headers['content-length'], 10)
-          });
+        if (this.option.progress) {
+          if (param.progress !== undefined) {
+            res.on('data', (chunk) => {
+              param.progress(chunk.length, parseInt(res.headers['content-length'], 10));
+            });
+          } else {
+            var bar = new progress('  downloading [:bar] :percent :etas', {
+              complete: '=',
+              incomplete: ' ',
+              width: 40,
+              total: parseInt(res.headers['content-length'], 10)
+            });
 
-          res.on('data', (chunk) => {
-            bar.tick(chunk.length);
-          });
-        } else if (typeof(this.option.progress) === 'function') {
-          res.on('data', (chunk) => {
-            this.option.progress(chunk.length, parseInt(res.headers['content-length'], 10));
-          });
+            res.on('data', (chunk) => {
+              bar.tick(chunk.length);
+            });
+          }
         }
 
         if (param.success !== undefined) {

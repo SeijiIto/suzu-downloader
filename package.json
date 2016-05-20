@@ -1,6 +1,6 @@
 {
   "name": "suzu-downloader",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "description": "A easy file downloader.",
   "homepage": "https://github.com/setouchi/suzu-downloader",
   "dependencies": {
