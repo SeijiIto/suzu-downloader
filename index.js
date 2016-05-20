@@ -10,8 +10,8 @@ module.exports = class SuzuDownloader {
 
   constructor(option) {
     this.option = Object.assign({
-      progress: true
-    }, (option === undefined ? {} : undefined));
+      progress: 'bar',
+    }, (option === undefined ? {} : option));
   }
 
   get(param) {
@@ -22,7 +22,7 @@ module.exports = class SuzuDownloader {
 
         res.pipe(outputFile);
 
-        if (this.option.progress) {
+        if (this.option.progress === 'bar') {
           var bar = new progress('  downloading [:bar] :percent :etas', {
             complete: '=',
             incomplete: ' ',
@@ -32,6 +32,10 @@ module.exports = class SuzuDownloader {
 
           res.on('data', (chunk) => {
             bar.tick(chunk.length);
+          });
+        } else if (typeof(this.option.progress) === 'function') {
+          res.on('data', (chunk) => {
+            this.option.progress(chunk.length, parseInt(res.headers['content-length'], 10));
           });
         }
 
