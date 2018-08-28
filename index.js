@@ -22,7 +22,7 @@ module.exports = class SuzuDownloader {
 
         res.pipe(outputFile);
 
-        if (this.option.progress) {
+        if (this.option.progress && res.headers['content-length'] != undefined) {
           if (param.progress !== undefined) {
             res.on('data', (chunk) => {
               param.progress(chunk.length, parseInt(res.headers['content-length'], 10));
